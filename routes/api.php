@@ -26,9 +26,14 @@ Route::post('/login', function (Request $request) {
     }
 
     return response()->json([
-        'token' => $user->createToken('auth-token')->plainTextToken,
-        'user'  => $user
-    ]);
+    'token' => $user->createToken('auth-token')->plainTextToken,
+    'user'  => [
+        'id'    => $user->id,
+        'name'  => $user->name,
+        'email' => $user->email,
+        'role'  => $user->role, 
+    ]
+]);
 });
 
 /*
