@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Http\Controllers\Api\BookController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,7 +28,12 @@ Route::post('/login', function (Request $request) {
 
     return response()->json([
         'token' => $user->createToken('auth-token')->plainTextToken,
-        'user'  => $user
+        'user'  => [
+            'id'    => $user->id,
+            'name'  => $user->name,
+            'email' => $user->email,
+            'role'  => $user->role,
+        ]
     ]);
 });
 
@@ -39,4 +45,20 @@ Route::post('/login', function (Request $request) {
 
 Route::middleware('auth:sanctum')->get('/me', function (Request $request) {
     return $request->user();
+});
+
+/*
+|--------------------------------------------------------------------------
+| BOOKS
+|--------------------------------------------------------------------------
+*/
+
+// semua user (login)
+Route::middleware('auth:sanctum')->group(function () {
+
+    Route::get('/books', [BookController::class, 'index']);
+    Route::post('/books', [BookController::class, 'store']);
+    Route::put('/books/{id}', [BookController::class, 'update']);
+    Route::delete('/books/{id}', [BookController::class, 'destroy']);
+
 });
